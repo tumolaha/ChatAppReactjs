@@ -1,0 +1,59 @@
+.dotsContainer {
+
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    border-radius: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
+    margin-bottom: 10px;
+    padding: 10px 5px;
+    width: 150px;
+    p {
+        margin-right: 10px;
+    }
+}
+
+#dot1,
+#dot2,
+#dot3 {
+    width: 7px;
+    height: 7px;
+    background: #cacaca;
+    border-radius: 50%;
+    margin: 3px;
+    transition: all 0.5s ease-in-out;
+    animation: typing 1s infinite;
+}
+
+#dot1 {
+    animation-delay: 1s;
+}
+
+#dot2 {
+    animation-delay: 0.5s;
+}
+
+#dot3 {
+    animation-delay: 0.8s;
+}
+
+@keyframes typing {
+    0% {
+        transform: translateY(0);
+        transition: all 0.5s ease-in-out;
+    }
+
+    50% {
+        transform: translateY(-5px);
+        transition: all 0.5s ease-in-out;
+    }
+
+    100% {
+        transform: translateY(0);
+        transition: all 0.5s ease-in-out;
+    }
+}
