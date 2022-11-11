@@ -71,9 +71,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("start typing message", (data) => {
-    io.in(user.room).emit("start typing message", data);
+    let sendUserSocket;
+    if (data.sender) {
+        sendUserSocket = onlineUsers.get(data.sender._id);
+    }
+    io.to(sendUserSocket).emit("start typing message", data);
   });
   socket.on("stop typing message", (data) => {
-    io.in(user.room).emit("stop typing message", data);
+    let sendUserSocket;
+    if (data.sender) {
+        sendUserSocket = onlineUsers.get(data.sender._id);
+    }
+    io.to(sendUserSocket).emit("stop typing message", data);
   });
 });

@@ -1,168 +1,66 @@
-import classNames from 'classnames/bind';
-import { useState } from 'react';
-import styles from './Header.module.scss';
-//style
-import { AppBar, Badge, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import React from 'react';
+//mui
+import { AppBar, Avatar, Box,  Container, IconButton, Toolbar, Typography } from '@mui/material';
+import { Menu as MenuIcons } from '@mui/icons-material';
+
 //component
+import Notification from './Notification';
+import Account from './Account';
+import AddFriend from './AddFriend/AddFriend';
 import Images from '~/assets/images/images';
-import { styled } from '@mui/material/styles';
-// import SearchHeader from './Search/Search';
-import { AccountCircle, Mail, More, Notifications } from '@mui/icons-material';
 
-// import Search from './Search';
-// import NotificationSection from './NotificationSection';
-// import ProfileSection from './ProfileSection';
-
-const cx = classNames.bind(styles);
-const CustomizedSlider = styled(AppBar)`
-    background-color: #ffff;
-    box-shadow: 0px 1px 1px rgb(0 0 0 / 12%);
-`;
-
-function Header() {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
-
-    const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
-
-    const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        </Menu>
-    );
-
-    const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="primary">
-                    <Badge badgeContent={4} color="error">
-                        <Mail />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton size="large" aria-label="show 17 new notifications" color="primary">
-                    <Badge badgeContent={17} color="error">
-                        <Notifications />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="primary"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-        </Menu>
-    );
-
+const Header = () => {
     return (
-        <div className={cx('wrapper')}>
-            <CustomizedSlider>
-                <Toolbar>
-                    <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        <img src={Images.logoChat} alt="" height="40px" />
-                    </Typography>
-                    {/* <SearchHeader /> */}
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="primary">
-                            <Badge badgeContent={4} color="error">
-                                <Mail />
-                            </Badge>
-                        </IconButton>
-                        <IconButton size="large" aria-label="show 17 new notifications" color="primary">
-                            <Badge badgeContent={17} color="error">
-                                <Notifications />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="primary"
+        <>
+            <AppBar
+                position="static"
+                sx={{ boxShadow: '0 3px 15px rgb(0 0 0 / 7%)', background: 'white', zIndex: 1000 }}
+            >
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        {/* <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            
                         >
-                            <AccountCircle />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="primary"
+                            Message Chat
+                        </Typography> */}
+                        <Avatar src={Images.logoChat} sx={{ mr: 2, display: { xs: 'none', md: 'flex' }}}/>
+
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                // onClick={handleOpenNavMenu}
+                                color="primary"
+                            >
+                                <MenuIcons fontSize="large" />
+                            </IconButton>
+                        </Box>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
                         >
-                            <More />
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-                {renderMobileMenu}
-                {renderMenu}
-            </CustomizedSlider>
-        </div>
+                            LOGO
+                        </Typography>
+
+                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
+
+                        <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+                            <AddFriend/>
+                            <Notification />
+                            <Account />
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        </>
     );
-}
+};
 
 export default Header;

@@ -2,32 +2,18 @@ import { useEffect, useState } from 'react';
 //hook
 import useDebounce from '~/hooks/useDebounce';
 //component ui
-import {Search } from '@mui/icons-material';
-import {
-    alpha,
-    Avatar,
-    Box,
-    InputBase,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    styled,
-    useTheme,
-} from '@mui/material';
-import Tippy from '@tippyjs/react/headless';
+import {  InputBase, styled } from '@mui/material';
 
 //api
-import * as searchServices from '~/services/SearchService';
+import * as Services from '~/services/userService';
+import { useSelector } from 'react-redux';
+import { MagnifyingGlass } from 'phosphor-react';
 
 const SearchStyle = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.secondary.main, 0.35),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.secondary.dark, 0.25),
-    },
-    marginLeft: 0,
+    backgroundColor: 'rgba(230,235,245,1) !important',
+    marginRight: theme.spacing(2),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(0),
@@ -62,13 +48,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-function SearchSubsider() {
+function SearchSubsider({ setSearchResult }) {
+    const user = useSelector((state) => state.auth.login.currentUser);
     const [userValue, setUserValue] = useState('');
-
-    const [showResult, setShowResult] = useState(true);
-    const [searchResult, setSearchResult] = useState([]);
     const [loading, setLoading] = useState(false);
-
     const debouncedValue = useDebounce(userValue, 500);
 
     useEffect(() => {
@@ -79,32 +62,25 @@ function SearchSubsider() {
 
         const fetchApi = async () => {
             setLoading(true);
-
-            const listUsers = await searchServices.searchUser(debouncedValue);
-            
-            setSearchResult(listUsers);
+            const listFriends = await Services.getFriendsUser(user._id);
+            // const listFriends = []
+            let listSearchFriends = listFriends.data.user.filter((e) => e === debouncedValue);
+            console.log(listSearchFriends);
+            setSearchResult(listSearchFriends);
             setLoading(false);
         };
         fetchApi();
     }, [debouncedValue]);
 
-    const handleClick = (event) => {
-        setShowResult(true);
-    };
-    const handleClose = () => {
-        setShowResult(false);
-        
-    };
     const handleChange = (e) => {
         const searchValueTmp = e.target.value;
         if (!searchValueTmp.startsWith(' ')) {
             setUserValue(searchValueTmp);
         }
     };
-    const theme = useTheme();
     return (
         <>
-            <Tippy
+            {/* <Tippy
                 interactive
                 placement="bottom"
                 visible={searchResult.length > 0 && showResult}
@@ -141,21 +117,19 @@ function SearchSubsider() {
                     </Box>
                 )}
                 onClickOutside={handleClose}
-            >
-                <SearchStyle>
-                    <SearchIconWrapper>
-                        <Search />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{ 'aria-label': 'search' }}
-                        value={userValue}
-                        onChange={handleChange}
-                        onClick={handleClick}
-                        onFocusCapture={handleClose}
-                    />
-                </SearchStyle>
-            </Tippy>
+            > */}
+            <SearchStyle>
+                <SearchIconWrapper>
+                    <MagnifyingGlass size={20} />
+                </SearchIconWrapper>
+                <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={userValue}
+                    onChange={handleChange}
+                />
+            </SearchStyle>
+            {/* </Tippy> */}
         </>
     );
 }

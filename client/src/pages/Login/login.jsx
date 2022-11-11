@@ -15,7 +15,7 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '~/redux/ApiAuth';
+import { loginUser } from '~/redux/Auth/ApiAuth';
 
 function Copyright(props) {
     return (

@@ -14,7 +14,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '~/redux/ApiAuth';
+import { registerUser } from '~/redux/Auth/ApiAuth';
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>

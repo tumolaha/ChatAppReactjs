@@ -13,6 +13,7 @@ import ChatContainer from './ChatContainer/ChatContainer';
 import { io } from 'socket.io-client';
 import HeaderChat from './HeaderChat/HeaderChat';
 import useTyping from '~/hooks/useTyping';
+import { Typography } from '@mui/material';
 
 const cx = classNames.bind(styles);
 const socket = io('http://localhost:5000');
@@ -28,8 +29,9 @@ function Chat() {
     const [typingUsers, setTypingUsers] = useState([]);
     //send fife image
 
-    const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
+    // const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
 
+    // console.log('render');
     //fetch socket
     useEffect(() => {
         socket.on('message-receiver', (value) => {
@@ -64,9 +66,18 @@ function Chat() {
 
     // submit chat
     const handleSendChatValue = async (value) => {
-        cancelTyping();
+        // cancelTyping();
         //call socket
         const time = Date.now().toString();
+        let userData;
+        if (currentUser) {
+            userData = {
+                sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
+                receiverId: currentChatSelect.currentChat._id,
+                message: { text: value },
+                createAt: time,
+            };
+        }
         socket.emit('send-message', {
             sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
             receiverId: currentChatSelect.currentChat._id,
@@ -90,63 +101,62 @@ function Chat() {
         arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
     }, [arrivalMessage]);
 
-    //send fife
+    // send fife
 
     // typing chat user
-    useEffect(() => {
-        socket.on('start typing message', (typingInfo) => {
-            if (typingInfo.senderId !== socket.id) {
-                const user = typingInfo.user;
-                setTypingUsers((users) => [...users, user]);
-            }
-        });
+    // useEffect(() => {
+    //     socket.on('start typing message', (typingInfo) => {
+    //         if (typingInfo.senderId !== socket.id) {
+    //             const user = typingInfo.user;
+    //             setTypingUsers((users) => [...users, user]);
+    //         }
+    //     });
 
-        socket.on('stop typing message', (typingInfo) => {
-            if (typingInfo.senderId !== socket.id) {
-                const user = typingInfo.user;
-                setTypingUsers((users) => users.filter((u) => u.username !== user.username));
-            }
-        });
-        
-    }, [currentChatSelect]);
+    //     socket.on('stop typing message', (typingInfo) => {
+    //         if (typingInfo.senderId !== socket.id) {
+    //             const user = typingInfo.user;
+    //             setTypingUsers((users) => users.filter((u) => u.username !== user.username));
+    //         }
+    //     });
 
-    const startTypingMessage = () => {
-        if (!socket) return;
-        socket.emit('start typing message', {
-            senderId: currentChatSelect.currentChat,
-            user: currentChatSelect.currentChat,
-        });
-    };
+    // }, [currentChatSelect]);
 
-    const stopTypingMessage = () => {  
-        if (!socket) return;
-        if(currentChatSelect){socket.emit('stop typing message', {
-            senderId: currentChatSelect.currentChat._id,
-            user: currentChatSelect.currentChat,
-        });}
-    };
+    // const startTypingMessage = () => {
+    //     if (!socket) return;
+    //     socket.emit('start typing message', {
+    //         senderId: currentChatSelect.currentChat,
+    //         user: currentChatSelect.currentChat,
+    //     });
+    // };
 
-    useEffect(() => {
-        if (isTyping) startTypingMessage();
-        else stopTypingMessage();
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isTyping]);
-    
+    // const stopTypingMessage = () => {
+    //     if (!socket) return;
+    //     if(currentChatSelect){socket.emit('stop typing message', {
+    //         senderId: currentChatSelect.currentChat,
+    //         user: currentChatSelect.currentChat,
+    //     });}
+    // };
+
+    // useEffect(() => {
+    //     if (isTyping) startTypingMessage();
+    //     else stopTypingMessage();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [isTyping]);
+
     return !currentChatSelect.currentChat ? (
-        <div className={cx('wrapper')}>
-            <img src={Images.welcome} style={{ width: '100%', height: '100%' }} alt="photoGra" />
+        <div className={cx('wrapper')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Typography variant="h4">Welcome {currentUser.id}</Typography>
         </div>
     ) : (
         <div className={cx('wrapper')}>
             {/* header */}
             <HeaderChat currentChatSelect={currentChatSelect} />
             {/* chat container */}
-            <ChatContainer currentUser={currentUser} message={messages} typingUsers={typingUsers}/>
+            <ChatContainer currentUser={currentUser} message={messages} typingUsers={typingUsers} />
             {/* chat form */}
             <NewMessageForm
-                handleStartTyping={startTyping}
-                handleStopTyping={stopTyping}
+                // handleStartTyping={startTyping}
+                // handleStopTyping={stopTyping}
                 handleSendChatValue={handleSendChatValue}
             />
         </div>

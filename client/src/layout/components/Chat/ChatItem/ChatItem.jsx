@@ -1,13 +1,17 @@
 import classNames from 'classnames/bind';
 import styles from '../Chat.module.scss';
 
-import { format } from 'timeago.js';
 //mui
 import { EmojiEmotions, MoreVert, Reply } from '@mui/icons-material';
 import { Avatar, Box, IconButton, Typography, useTheme } from '@mui/material';
+import TimeAgo from 'timeago-react';
 //component
 
 const cx = classNames.bind(styles);
+// TimeAgo.register('vi', vi);
+
+// then use it.
+
 function ChatItem({ own = true, value = {}, currentUser }) {
     const theme = useTheme();
     return (
@@ -41,7 +45,9 @@ function ChatItem({ own = true, value = {}, currentUser }) {
                     </div>
                 </div>
 
-                <Typography>{format(value.createdAt)}</Typography>
+                <span>
+                    <TimeAgo datetime={value.createdAt} locale="vi" />
+                </span>
             </div>
         </div>
     );
