@@ -58,6 +58,9 @@ const authSlice = createSlice({
             state.logOut.isFetching = false;
             state.logOut.error = true;
         },
+        editProfile: (state, action) => {
+            state.login.currentUser = action.payload;
+        },
     },
 });
 
@@ -71,6 +74,7 @@ export const {
     logOutSuccess,
     logOutStart,
     logOutFailed,
+    editProfile,
 } = authSlice.actions;
 
 export default authSlice.reducer;

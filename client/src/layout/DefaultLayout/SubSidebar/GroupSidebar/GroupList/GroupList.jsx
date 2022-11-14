@@ -55,9 +55,7 @@ function GroupList({ searchResult }) {
                 setListGroups(searchResult);
             } else {
                 const res = await services.getGroupUser(user._id);
-                console.log(res);
                 setListGroups(res.data || []);
-                console.log(searchResult);
             }
 
             setLoading(false);

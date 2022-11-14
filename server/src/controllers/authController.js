@@ -62,5 +62,29 @@ const login = async (req, res) => {
     res.status(500).json({ message: error });
   }
 };
+const editProfile = async (req, res) => {
+  try {
+    const { id, first_name, last_name, email, location, phone } = req.body;
+    await userModel.editItem(
+      {
+        id: id,
+        body: {
+          first_name: first_name,
+          last_name: last_name,
+          email: email,
+          location: location,
+          phone: phone,
+        },
+      },
+      { task: "one" }
+    );
 
-module.exports = { login, signup };
+    const user = await userModel.listUser({id: id}, { task: "one" });
+    console.log(user);
+    return res.json({ status: true, data: user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, message: error });
+  }
+};
+module.exports = { login, signup, editProfile };

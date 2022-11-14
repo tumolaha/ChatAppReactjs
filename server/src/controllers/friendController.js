@@ -5,7 +5,7 @@ const userSchema = require("../schemas/userSchema");
 const addFriends = async (req, res) => {
   try {
     const { from, to } = req.query;
-
+    console.log(from , to);
     await userSchema.updateOne(
       { _id: from },
       { $push: { friends: { user: to, status: 1 } } }
@@ -15,10 +15,12 @@ const addFriends = async (req, res) => {
       { _id: to },
       { $push: { friends: { user: from, status: 2 } } }
     );
-
     return res.json({
       status: true,
       message: "add friends success",
+      user:{
+
+      }
     });
   } catch (error) {
     console.log(error);

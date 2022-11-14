@@ -48,7 +48,7 @@ function MessageListItem({ searchResult }) {
     const [loading, setLoading] = useState(false);
 
     const [currentSelect, seCurrentSelect] = useState(null);
-
+    
     useEffect(() => {
         const apiRequest = async () => {
             setLoading(true);

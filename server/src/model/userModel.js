@@ -24,7 +24,7 @@ module.exports = {
     }
     //get one user
     if (option.task == "one") {
-      if (params._id) {
+      if (params.id) {
         return userSchema.findOne({ _id: `${params.id}` }).select({});
       }
       if (params.username) {
@@ -43,9 +43,10 @@ module.exports = {
       return userSchema.deleteOne({ _id: params.id });
     }
   },
-  editItem: (params, option) => {
+  editItem: async(params, option) => {
+    
     if (option.task == "one") {
-      return userSchema.updateOne({ _id: params.id }, params.body);
+      return await userSchema.updateOne({ _id: params.id }, params.body);
     }
   },
 };

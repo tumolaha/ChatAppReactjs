@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 function App() {
     const user =  useSelector((state)=> state.auth.login.currentUser);
-    
     let routerUser = publicRoutes;
     if(user){
         routerUser =  privateRoutes;

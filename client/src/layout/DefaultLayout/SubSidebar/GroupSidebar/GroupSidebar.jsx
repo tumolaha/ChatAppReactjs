@@ -174,7 +174,6 @@ function GroupSidebar() {
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    console.log('object');
     return (
         <Stack direction={'column'} spacing={1} p={3} height="100%">
             <Stack direction={'row'} spacing={1} justifyContent="space-between" alignItems="center">

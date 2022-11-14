@@ -12,8 +12,8 @@ import Register from '~/pages/Register/Register';
 
 // Public routes
 const publicRoutes = [
-    { path: '/', component: Login , layout: HeaderOnly },
-    { path: '/register', component: Register , layout: HeaderOnly },
+    { path: '/', component: Login, layout: null },
+    { path: '/register', component: Register , layout: null },
 ];
 
 const privateRoutes = [

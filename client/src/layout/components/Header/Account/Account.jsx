@@ -1,17 +1,7 @@
-import { AccountCircle, Logout, PersonAdd, Settings } from '@mui/icons-material';
-import {
-    Avatar,
-    Box,
-    Divider,
-    IconButton,
-    ListItem,
-    ListItemAvatar,
-    ListItemIcon,
-    Menu,
-    MenuItem,
-    Typography,
-} from '@mui/material';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Logout, PersonAdd, Settings } from '@mui/icons-material';
+import { Avatar, Box, Divider, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
 
 function Account() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,6 +12,8 @@ function Account() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const currentUser = useSelector((state) => state.auth.login.currentUser);
 
     return (
         <>
@@ -40,13 +32,17 @@ function Account() {
                     alignItems: 'center',
                 }}
             >
-                <Avatar variant='circular'  sx={{ width: 30, height: 30, marginRight: "10px" }}/>
+                <Avatar
+                    variant="circular"
+                    src={`data:image/svg+xml;base64,${currentUser.avatarImage || ''}`}
+                    sx={{ width: 30, height: 30, marginRight: '10px' }}
+                />
                 <div>
                     <Typography variant="h6" component="h6" color={'gray'} fontSize="1rem">
-                        TUMOLAHA
+                        {currentUser.first_name + ' ' + currentUser.last_name}
                     </Typography>
                     <Typography color={'gray'} fontSize="0.9rem">
-                        TUMOLAHA
+                        {currentUser.username}
                     </Typography>
                 </div>
             </Box>
@@ -94,17 +90,7 @@ function Account() {
                         },
                     }}
                 >
-                    <Avatar /> Profile
-                </MenuItem>
-                <MenuItem
-                    sx={{
-                        borderRadius: '10px',
-                        '&:hover': {
-                            background: 'rgba(75,156,242,0.13)',
-                        },
-                    }}
-                >
-                    <Avatar /> My account
+                    My account
                 </MenuItem>
                 <Divider />
                 <MenuItem
