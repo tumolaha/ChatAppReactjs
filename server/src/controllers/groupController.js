@@ -3,10 +3,11 @@ const groupModel = require("../model/groupModel");
 
 const createGroup = async (req, res) => {
   try {
-    const { name, member = [], create } = req.body;
+    const { name,description, member = [], create  } = req.body;
     const data = await groupModel.create({
       nameGroup: name,
-      member: member,
+      description: description,
+      member: [create,...member],
       create: create,
     });
     if (data)

@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Chat.module.scss';
 
 //component
-import * as services from '~/services/messageService';
+import * as servicesMessage from '~/services/messageService';
 //ui
 import NewMessageForm from './ChatForm/NewMessageForm';
 import { useSelector } from 'react-redux';
@@ -44,11 +44,14 @@ function Chat() {
     useEffect(() => {
         const fetchApi = async () => {
             if (currentChatSelect.currentChat && currentChatSelect.typeChat === 0) {
-                const response = await services.getMessageFriends(currentUser._id, currentChatSelect.currentChat._id);
+                const response = await servicesMessage.getMessageFriends(
+                    currentUser._id,
+                    currentChatSelect.currentChat._id,
+                );
                 setMessages(response);
             }
             if (currentChatSelect.currentChat && currentChatSelect.typeChat === 1) {
-                const response = await services.getMessageGroup(currentChatSelect.currentChat._id);
+                const response = await servicesMessage.getMessageGroup(currentChatSelect.currentChat._id);
                 console.log(response);
                 setMessages(response);
             }
@@ -63,46 +66,62 @@ function Chat() {
         const time = Date.now().toString();
         if (currentChatSelect.typeChat === 0) {
             let userData;
-            if (currentUser) {
-                userData = {
-                    sender: {
-                        _id: currentUser._id,
-                        username: currentUser.username,
-                        avatarImage: currentUser.avatarImage,
-                    },
-                    receiverId: currentChatSelect.currentChat._id,
-                    message: { text: value },
-                    createAt: time,
-                };
-            }
-            socket.emit('send-message', {
-                sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
+            userData = {
+                sender: {
+                    _id: currentUser._id,
+                    username: currentUser.username,
+                    avatarImage: currentUser.avatarImage,
+                },
                 receiverId: currentChatSelect.currentChat._id,
                 message: { text: value },
                 createAt: time,
+            };
+            socket.emit('send-message', {
+                // sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
+                // receiverId: currentChatSelect.currentChat._id,
+                // message: { text: value },
+                // createAt: time,
+                userData,
             });
 
             //call api
-            await services.addMessageFriends(currentUser._id, currentChatSelect.currentChat._id, value);
+            await servicesMessage.addMessageFriends(currentUser._id, currentChatSelect.currentChat._id, value);
             const msgs = [...messages];
-            msgs.push({
-                sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
-                user: [currentUser._id, currentChatSelect.currentChat._id],
-                message: { text: value },
-                createAt: time,
-            });
-            setMessages(msgs);
+            // msgs.push({
+            //     // sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
+            //     // user: [currentUser._id, currentChatSelect.currentChat._id],
+            //     // message: { text: value },
+            //     // createAt: time,
+            //     userData,
+            // });
+
+            setMessages([...msgs, userData]);
         }
         if (currentChatSelect.typeChat === 1) {
-            await services.addMessageFriends(currentUser._id, currentChatSelect.currentChat._id, value);
-            const msgs = [...messages];
-            msgs.push({
+            let userGroup = {
                 sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
-                user: [currentUser._id, currentChatSelect.currentChat._id],
+                user: [currentChatSelect.currentChat.member],
                 message: { text: value },
+                groupId: currentChatSelect.currentChat._id,
                 createAt: time,
-            });
-            setMessages(msgs);
+            };
+            await servicesMessage.addMessageGroups(
+                currentChatSelect.currentChat._id,
+                currentUser._id,
+                currentChatSelect.currentChat.member,
+                value,
+            );
+            const msgs = [...messages];
+            // msgs.push({
+            //     // sender: { _id: currentUser._id, username: currentUser.username, avatarImage: currentUser.avatarImage },
+            //     // user: [currentUser._id, currentChatSelect.currentChat._id],
+            //     // message: { text: value },
+            //     // createAt: time,
+            //     userGroup,
+            // });
+            // console.log(msgs);
+            setMessages([...msgs, userGroup]);
+            // console.log(msgs);
         }
     };
 

@@ -41,7 +41,7 @@ const ModelEditProfile = ({ open, handleClose }) => {
     const [firstName, setFirstName] = useState(currentUser.first_name);
     const [lastName, setLastName] = useState(currentUser.last_name);
 
-    const [username, setUsername] = useState(currentUser.username);
+    // const [username, setUsername] = useState(currentUser.username);
     const [email, setEmail] = useState(currentUser.email);
     const [phone, setPhone] = useState(currentUser.phone);
     const [location, setLocation] = useState(currentUser.location);
@@ -51,6 +51,7 @@ const ModelEditProfile = ({ open, handleClose }) => {
         const res = await services.editProfile(currentUser._id, firstName, lastName, email, location, phone);
         console.log(res.data);
         dispatch(editProfile(res.data))
+        handleClose();
     };
 
     return (
@@ -87,7 +88,7 @@ const ModelEditProfile = ({ open, handleClose }) => {
                                 value={lastName}
                             />
                         </Stack>
-                        <Stack direction={'column'}>
+                        {/* <Stack direction={'column'}>
                             <Typography variant="h6">User Name</Typography>
                             <TextField
                                 id="filled-basic"
@@ -95,9 +96,8 @@ const ModelEditProfile = ({ open, handleClose }) => {
                                 variant="filled"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder
                             />
-                        </Stack>
+                        </Stack> */}
                         <Stack direction={'column'}>
                             <Typography variant="h6">Email</Typography>
                             <TextField

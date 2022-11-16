@@ -40,28 +40,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
 }));
 
-function GroupList({ searchResult }) {
+function GroupList({ searchResult, listGroups }) {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.auth.login.currentUser);
-    const [listGroups, setListGroups] = useState([]);
-    const [loading, setLoading] = useState(false);
-
     const [currentSelect, seCurrentSelect] = useState(null);
-
-    useEffect(() => {
-        const apiRequest = async () => {
-            setLoading(true);
-            if (searchResult.length > 0) {
-                setListGroups(searchResult);
-            } else {
-                const res = await services.getGroupUser(user._id);
-                setListGroups(res.data || []);
-            }
-
-            setLoading(false);
-        };
-        apiRequest();
-    }, [user, searchResult]);
     const selectCurrent = (item, index) => {
         dispatch(setCurrentContact({ currentChat: item, typeChat: 1 }));
         seCurrentSelect(index);
