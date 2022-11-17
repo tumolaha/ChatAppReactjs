@@ -32,9 +32,9 @@ mongoose
     console.log(err.message);
   });
 //url
-app.get("/", (req, res) => {
-  res.send("Hello, World: ");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello, World: ");
+// });
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);

@@ -1,9 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import { Avatar, Box, Divider, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
+import {} from '~/redux/Auth/AuthSlice'
 function Account() {
+    const dispatch = useDispatch();
+    const navigate =  useNavigate()
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -14,7 +17,9 @@ function Account() {
     };
 
     const currentUser = useSelector((state) => state.auth.login.currentUser);
+    const handleLogout =()=>{
 
+    }
     return (
         <>
             <Box
@@ -126,6 +131,7 @@ function Account() {
                             background: 'rgba(75,156,242,0.13)',
                         },
                     }}
+                    onClick={handleLogout}
                 >
                     <ListItemIcon>
                         <Logout fontSize="small" />
