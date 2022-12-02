@@ -5,10 +5,30 @@ import PropTypes from 'prop-types';
 
 //mui
 import { ExpandMore } from '@mui/icons-material';
-import { Avatar, Badge, IconButton, styled, useTheme, Stack, Typography, Chip } from '@mui/material';
+import {
+    Avatar,
+    Badge,
+    IconButton,
+    styled,
+    useTheme,
+    Stack,
+    Typography,
+    Chip,
+    FormControl,
+    InputLabel,
+    Select,
+    OutlinedInput,
+    Box,
+    MenuItem,
+    Modal,
+    TextField,
+    TextareaAutosize,
+    Button,
+} from '@mui/material';
 
 //component
-import * as services from '~/services/userService';
+import * as serviceUser from '~/services/userService';
+import * as serviceGroup from '~/services/GroupService';
 import { setCurrentContact } from '~/redux/Contact/contactSlice';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -39,17 +59,214 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
         },
     },
 }));
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    // height: '80%',
+    bgcolor: 'background.paper',
+    borderRadius: '10px',
+    // boxShadow: 24,
+    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+    pt: 2,
+    px: 4,
+    pb: 3,
+};
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
+function getStyles(user, personName, theme) {
+    return {
+        fontWeight:
+            personName.indexOf(user.user) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+}
+
+function MultipleSelectChip1({ setMember, member }) {
+    const theme = useTheme();
+    const [personName, setPersonName] = useState([]);
+    const [contact, setContact] = useState([]);
+
+    const handleChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setPersonName(
+            // On autofill we get a stringified value.
+            // typeof value === 'string' ? value.username.split(',') : value.username,
+            value,
+        );
+    };
+    useEffect(() => {
+        const requestApi = async () => {
+            const res = await serviceUser.getAllUser();
+            setContact(res.data);
+        };
+        requestApi();
+    }, []);
+    const handleDelete = (chipToDelete) => () => {
+        setPersonName((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+    };
+    useEffect(() => {
+        const list = personName.map((item) => {
+            return item?._id;
+        });
+        setMember(list);
+    }, [personName, setMember]);
+    return (
+        <FormControl sx={{ m: 1, width: '100%' }}>
+            <InputLabel id="demo-multiple-chip-label">Select Member</InputLabel>
+            <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={personName}
+                onChange={handleChange}
+                input={<OutlinedInput id="select-multiple-chip" label="Select Member" />}
+                renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                            <Chip
+                                avatar={
+                                    <Avatar
+                                        alt={value?.username}
+                                        src={`data:image/svg+xml;base64,${value?.avatarImage}`}
+                                    />
+                                }
+                                key={value?._id}
+                                label={value?.username}
+                                onDelete={handleDelete(value)}
+                            />
+                        ))}
+                    </Box>
+                )}
+                MenuProps={MenuProps}
+            >
+                {contact.map((user) => (
+                    <MenuItem key={user._id} value={user} style={getStyles(user, personName, theme)}>
+                        {user.username}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    );
+}
+function BasicModal({ open1, setOpen1 }) {
+    // const [username, setUsername] = useState(currentUser.username);
+    const value = useSelector((state) => state.contact.currentContact.currentChat);
+    const currentUser = useSelector((state) => state.auth.login.currentUser);
+    const [id, setId] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [member, setMember] = useState([]);
+    useEffect(() => {
+        if (value) {
+            setId(value._id);
+            setName(value?.nameGroup);
+            setDescription(value?.description);
+            setMember(value?.member);
+        }
+    }, [value]);
+    const handleClose = () => setOpen1(false);
+
+    const handleEditGroup = () => {
+        const apiRequest = async () => {
+            const res = await serviceGroup.UpdateGroup(id, name, description, [currentUser._id, ...member]);
+            console.log(res);
+        };
+        apiRequest();
+        handleClose();
+    };
+
+    return (
+        <>
+            <Modal
+                open={open1}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Stack direction={'column'} spacing={1.5}>
+                        <Stack direction={'row'} spacing={1}>
+                            <Typography variant="h5">Create Group</Typography>
+                        </Stack>
+                        <Stack direction={'column'} spacing={1}>
+                            <Stack direction={'row'}>
+                                <Typography variant="h6">Group Name</Typography>
+                            </Stack>
+                            <Stack direction={'row'} p={1}>
+                                <TextField
+                                    id="outlined-basic"
+                                    label="Enter Group Name"
+                                    variant="outlined"
+                                    sx={{ width: '100%' }}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </Stack>
+                        </Stack>
+                        <Stack direction={'column'} spacing={1}>
+                            <Stack direction={'row'}>
+                                <Typography variant="h6">Group Members</Typography>
+                            </Stack>
+                            <Stack direction={'row'}>
+                                <MultipleSelectChip1 setMember={setMember} member={member} />
+                            </Stack>
+                            {/* <TextField id="outlined-basic" label="Enter Group Name" variant="outlined" /> */}
+                        </Stack>
+                        <Stack direction={'column'}>
+                            <Typography variant="h6">Description</Typography>
+                            <Stack p={1}>
+                                <TextareaAutosize
+                                    aria-label="minimum height"
+                                    minRows={3}
+                                    maxRows={5}
+                                    style={{ width: '100%' }}
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                />
+                            </Stack>
+                        </Stack>
+                        <Stack direction={'row'} p={2} spacing={1} justifyContent="center">
+                            <Button variant="contained" size="medium" onClick={handleEditGroup}>
+                                edit
+                            </Button>
+                            <Button variant="outlined" size="medium" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Box>
+            </Modal>
+        </>
+    );
+}
 function GroupList({ searchResult, listGroups }) {
     const dispatch = useDispatch();
+    const [open1, setOpen1] = useState(false);
     const [currentSelect, seCurrentSelect] = useState(null);
     const selectCurrent = (item, index) => {
         dispatch(setCurrentContact({ currentChat: item, typeChat: 1 }));
         seCurrentSelect(index);
     };
+    const handleOpen1 = () => setOpen1(true);
     const theme = useTheme();
     return (
         <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={1} width="100%" p={1}>
+            <BasicModal open1={open1} setOpen1={setOpen1} />
             {listGroups.map((item, index) => {
                 return (
                     <Stack
@@ -134,6 +351,7 @@ function GroupList({ searchResult, listGroups }) {
                                             color: theme.palette.primary.light,
                                         },
                                     }}
+                                    onClick={handleOpen1}
                                 >
                                     <ExpandMore />
                                 </IconButton>

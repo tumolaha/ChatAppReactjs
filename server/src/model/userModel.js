@@ -4,23 +4,28 @@ module.exports = {
   listUser: (params, option) => {
     let objWhere = {};
     let sort = {};
-    const limit = params.limit ;
-    
+    const limit = params.limit;
+
     //keyword search
     if (params.keyword !== "") {
-      objWhere.username = new RegExp(params.keyword, "i")|| '';
-      objWhere.fist_name = new RegExp(params.keyword, "i") || '';
-      objWhere.last_name = new RegExp(params.keyword, "i") || '';
+      objWhere.username = new RegExp(params.keyword, "i") || "";
+      objWhere.fist_name = new RegExp(params.keyword, "i") || "";
+      objWhere.last_name = new RegExp(params.keyword, "i") || "";
     }
     if (params.sortField) sort[params.sortField] = params.sortType;
     //get all user vaf search
     if (option.task == "all") {
-      return userSchema.find({$or: [{username: objWhere.username},{first_name: objWhere.fist_name}, {last_name: objWhere.last_name}]
-        
-      })
+      return userSchema
+        .find({
+          $or: [
+            { username: objWhere.username },
+            { first_name: objWhere.fist_name },
+            { last_name: objWhere.last_name },
+          ],
+        })
         .select({})
         .sort(sort)
-        .limit(limit)
+        .limit(limit);
     }
     //get one user
     if (option.task == "one") {
@@ -28,7 +33,9 @@ module.exports = {
         return userSchema.findOne({ _id: `${params.id}` }).select({});
       }
       if (params.username) {
-        return userSchema.findOne({ username: `${params.username}` }).select({});
+        return userSchema
+          .findOne({ username: `${params.username}` })
+          .select({});
       }
       if (params.email) {
         return userSchema.findOne({ email: `${params.email}` }).select();
@@ -43,8 +50,7 @@ module.exports = {
       return userSchema.deleteOne({ _id: params.id });
     }
   },
-  editItem: async(params, option) => {
-    
+  editItem: async (params, option) => {
     if (option.task == "one") {
       return await userSchema.updateOne({ _id: params.id }, params.body);
     }

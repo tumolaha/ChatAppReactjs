@@ -3,7 +3,7 @@ import { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from '../Chat.module.scss';
 //ui
-import { AttachFile, EmojiEmotions, Image, Send } from '@mui/icons-material';
+import { EmojiEmotions, Send } from '@mui/icons-material';
 import { Button, IconButton } from '@mui/material';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
@@ -50,12 +50,7 @@ function NewMessageForm({ handleSendChatValue,   handleStartTyping,  handleStopT
                             </div>
                         )}
                     </div>
-                    <IconButton>
-                        <AttachFile fontSize="large" />
-                    </IconButton>
-                    <IconButton>
-                        <Image fontSize="large" />
-                    </IconButton>
+                    {/*   */}
                 </div>
                 <form
                     onSubmit={handleSubmitChatValue}

@@ -2,8 +2,7 @@
 import classNames from 'classnames/bind';
 import styles from '../Chat.module.scss';
 //mui
-import { CameraAlt, LocalPhone } from '@mui/icons-material';
-import { Avatar, Badge, IconButton, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { Avatar, Badge, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 const cx  =  classNames.bind(styles);
 
 
@@ -67,7 +66,7 @@ function HeaderChat({currentChatSelect}) {
     </div>
 
     <div className={cx('right')}>
-        <IconButton
+        {/* <IconButton
             sx={{
                 fontSize: '2rem',
             }}
@@ -76,7 +75,7 @@ function HeaderChat({currentChatSelect}) {
         </IconButton>
         <IconButton>
             <LocalPhone />
-        </IconButton>
+        </IconButton> */}
     </div>
 </div> );
 }

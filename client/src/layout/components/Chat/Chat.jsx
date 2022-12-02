@@ -34,6 +34,7 @@ function Chat() {
                 createAt: value.createAt,
             });
         });
+        // socket.on('get-online-user', (value) => {console.log(value);})
     }, []);
 
     useEffect(() => {

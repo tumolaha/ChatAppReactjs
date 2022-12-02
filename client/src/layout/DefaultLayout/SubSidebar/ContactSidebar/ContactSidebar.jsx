@@ -6,6 +6,10 @@ import * as services from '~/services/FriendsService';
 import * as servicesUser from '~/services/userService';
 import { useSelector } from 'react-redux';
 // , value, AddFriends, AcceptFriends, RemoveFriends
+
+
+
+
 export const Comp = ({ status, value, currentUser, listFriends, setListFriends }) => {
     const AddFriends = async (from, to) => {
         const res = await services.SendRequestFriends(from, to);

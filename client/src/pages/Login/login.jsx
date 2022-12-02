@@ -11,11 +11,14 @@ import {
     Checkbox,
     Button,
     Grid,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '~/redux/Auth/ApiAuth';
+import { useState } from 'react';
 
 function Copyright(props) {
     return (
@@ -32,26 +35,38 @@ function Copyright(props) {
 
 const theme = createTheme();
 function Login() {
-    const dispatch =  useDispatch();
-    const navigate=  useNavigate()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const checkLogin = useSelector((state) => state.auth.login);
+    const [openAlert, setOpenAlert] = useState(false);
 
+    const handleClickAlert = () => {
+        setOpenAlert(true);
+    };
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         console.log({
-            data
+            data,
         });
         const user = {
             username: data.get('username'),
             password: data.get('password'),
-        };  
-        loginUser(user, dispatch, navigate)
+        };
+        loginUser(user, dispatch, navigate);
+        handleClickAlert();
         try {
         } catch (error) {
             console.log(error);
         }
     };
 
+    const handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -106,6 +121,22 @@ function Login() {
                     </Box>
                 </Box>
                 <Copyright sx={{ mt: 8, mb: 4 }} />
+                <Snackbar
+                    open={openAlert}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    autoHideDuration={5000}
+                    onClose={handleCloseAlert}
+                >
+                    {!checkLogin.error ? (
+                        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+                            login a success message!
+                        </Alert>
+                    ) : (
+                        <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
+                            Active account password is not correct!
+                        </Alert>
+                    )}
+                </Snackbar>
             </Container>
         </ThemeProvider>
     );

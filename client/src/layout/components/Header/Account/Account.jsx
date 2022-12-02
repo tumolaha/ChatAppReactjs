@@ -1,25 +1,39 @@
-import React from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Logout, PersonAdd, Settings } from '@mui/icons-material';
-import { Avatar, Box, Divider, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Divider, ListItemIcon, Menu, MenuItem, Snackbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import {} from '~/redux/Auth/AuthSlice'
+import { logOutUser } from '~/redux/Auth/ApiAuth';
 function Account() {
     const dispatch = useDispatch();
-    const navigate =  useNavigate()
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [openAlert, setOpenAlert] = useState(false);
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+ 
+    const handleClickAlert = () => {
+        setOpenAlert(true);
+    };
     const currentUser = useSelector((state) => state.auth.login.currentUser);
-    const handleLogout =()=>{
+    const checkLogout = useSelector((state) => state.auth.logOut);
+    const handleLogout = () => {
+        logOutUser(dispatch, navigate);
+        handleClickAlert();
+    };
 
-    }
+    const handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
     return (
         <>
             <Box
@@ -98,7 +112,7 @@ function Account() {
                     My account
                 </MenuItem>
                 <Divider />
-                <MenuItem
+                {/* <MenuItem
                     sx={{
                         borderRadius: '10px',
                         '&:hover': {
@@ -123,7 +137,7 @@ function Account() {
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     Settings
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
                     sx={{
                         borderRadius: '10px',
@@ -139,6 +153,22 @@ function Account() {
                     Logout
                 </MenuItem>
             </Menu>
+            <Snackbar
+                open={openAlert}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                autoHideDuration={5000}
+                onClose={handleCloseAlert}
+            >
+                {!checkLogout.error ? (
+                    <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+                        login a success message!
+                    </Alert>
+                ) : (
+                    <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
+                        logout false!
+                    </Alert>
+                )}
+            </Snackbar>
         </>
     );
 }

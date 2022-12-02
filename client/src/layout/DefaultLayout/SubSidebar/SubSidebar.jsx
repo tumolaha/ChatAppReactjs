@@ -8,9 +8,10 @@ import GroupSidebar from './GroupSidebar';
 import ContactSidebar from './ContactSidebar';
 import HelpSidebar from './HelpSidebar';
 import SettingSidebar from './SettingSidebar';
-
+import { io } from 'socket.io-client';
+import { useEffect, useState } from 'react';
 //component
-
+const socket = io('http://localhost:5000');
 const cx = classNames.bind(styles);
 
 const theme = createTheme({
@@ -25,10 +26,16 @@ const theme = createTheme({
 });
 
 function SubSidebar() {
+    const [onlineUser, setOnlineUser] = useState([]);
     const selected = useSelector((state) => state.sidebar.currentItem.selected);
 
     let Comp;
 
+    useEffect(() => {
+        socket.on('get-online-user', (users) => {
+            setOnlineUser(users);
+        });
+    }, [onlineUser]);
     if (selected === 1) {
         Comp = ProfileSidebar;
     }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 //hook
 import useDebounce from '~/hooks/useDebounce';
 //component ui
-import {  InputBase, styled } from '@mui/material';
+import { InputBase, styled } from '@mui/material';
 
 //api
 import * as Services from '~/services/userService';
@@ -54,6 +54,19 @@ function SearchSubsider({ setSearchResult }) {
     const [loading, setLoading] = useState(false);
     const debouncedValue = useDebounce(userValue, 500);
 
+    function search(keywords, source) {
+        const re = new RegExp('(' + keywords + ')', 'g');
+        const results = [];
+        for (var i = 0; i < source.length; i++) {
+            const text = source[i];
+            const texts = text.user.first_name + ' ' + text.user.last_name;
+            const result = text.user.username.toLowerCase().match(re) || texts.toLowerCase().match(re);
+            if (result != null || result != null) {
+                results.push(text);
+            }
+        }
+        return results;
+    }
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);
@@ -64,8 +77,7 @@ function SearchSubsider({ setSearchResult }) {
             setLoading(true);
             const listFriends = await Services.getFriendsUser(user._id);
             // const listFriends = []
-            let listSearchFriends = listFriends.data.user.filter((e) => e === debouncedValue);
-            console.log(listSearchFriends);
+            const listSearchFriends = search(debouncedValue, listFriends.data);
             setSearchResult(listSearchFriends);
             setLoading(false);
         };

@@ -9,6 +9,8 @@ const groupRouter = require("./src/routes/groupRouter");
 
 const app = express();
 const socket = require("socket.io");
+const userSchema = require("./src/schemas/userSchema");
+const { on } = require("./src/schemas/userSchema");
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,10 +33,9 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
-//url
-// app.get("/", (req, res) => {
-//   res.send("Hello, World: ");
-// });
+app.get("/", (req, res) => {
+  res.send("Hello, World: ");
+});
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);
@@ -47,41 +48,57 @@ const server = app.listen(PORT, () =>
 
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     credentials: true,
   },
 });
 //socket io
 global.onlineUsers = new Map();
 
+let users = [];
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId == userId) &&
+    users.push({ userId, socketId });
+};
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
+
 io.on("connection", (socket) => {
   socket.on("add-user", (userId) => {
     if (userId) {
       onlineUsers.set(userId, socket.id);
+      //online user
+      addUser(userId, socket.id);
+      io.emit("get-online-user", users);
     }
   });
 
   socket.on("send-message", (data) => {
-    const sendUserSocket = onlineUsers.get(data.receiverId);
+    const sendUserSocket = onlineUsers.get(data.userData.receiverId);
     socket.to(sendUserSocket).emit("message-receiver", {
-      sender: data.sender,
-      receiverId: data.receiverId,
-      message: data.message,
+      sender: data.userData.sender,
+      receiverId: data.userData.receiverId,
+      message: data.userData.message,
     });
   });
 
   socket.on("start typing message", (data) => {
     let sendUserSocket;
     if (data.sender) {
-        sendUserSocket = onlineUsers.get(data.sender._id);
+      sendUserSocket = onlineUsers.get(data.sender._id);
     }
-    io.to(sendUserSocket).emit("start typing message", data);
+    socket.to(sendUserSocket).emit("start typing message", data);
   });
   socket.on("stop typing message", (data) => {
     let sendUserSocket;
     if (data.sender) {
-        sendUserSocket = onlineUsers.get(data.sender._id);
+      sendUserSocket = onlineUsers.get(data.sender._id);
     }
-    io.to(sendUserSocket).emit("stop typing message", data);
+    socket.to(sendUserSocket).emit("stop typing message", data);
+  });
+  socket.on("disconnect", () => {
+    removeUser(socket.id);
+    io.emit("get-online-user", users);
   });
 });

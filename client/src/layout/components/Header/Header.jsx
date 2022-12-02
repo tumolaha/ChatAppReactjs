@@ -53,7 +53,7 @@ const Header = () => {
 
                         <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
                             <AddFriend/>
-                            <Notification />
+                            {/* <Notification /> */}
                             <Account />
                         </Box>
                     </Toolbar>

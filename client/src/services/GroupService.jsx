@@ -13,3 +13,17 @@ export const CreateGroup = async (name, description, member = [], create) => {
         console.log(error);
     }
 };
+
+export const UpdateGroup = async (id, nameGroup, description, member = []) => {
+    try {
+        const res = await httpRequest.post('api/groups/update', {
+            id,
+            nameGroup,
+            description,
+            member,
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

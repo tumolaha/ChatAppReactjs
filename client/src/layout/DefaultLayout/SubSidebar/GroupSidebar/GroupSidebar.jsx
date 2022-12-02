@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 //component
@@ -10,22 +10,27 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import GroupList from './GroupList/GroupList';
 import { Users } from 'phosphor-react';
 
+import GroupList from './GroupList/GroupList';
 import * as services from '~/services/userService';
 
+//
 
+//
 function GroupSidebar() {
     const user = useSelector((state) => state.auth.login.currentUser);
 
     const [open, setOpen] = useState(false);
+    
     const [searchResult, setSearchResult] = useState([]);
     const [listGroups, setListGroups] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    
 
     useEffect(() => {
         const apiRequest = async () => {
@@ -88,7 +93,7 @@ function GroupSidebar() {
                     },
                 }}
             >
-                <GroupList searchResult={searchResult} listGroups={listGroups} />
+                <GroupList  searchResult={searchResult} listGroups={listGroups} />
             </Stack>
         </Stack>
     );

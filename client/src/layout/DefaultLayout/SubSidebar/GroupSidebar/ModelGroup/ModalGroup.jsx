@@ -56,8 +56,8 @@ function getStyles(user, personName, theme) {
                 : theme.typography.fontWeightMedium,
     };
 }
-
-export function MultipleSelectChip({ setMember }) {
+//
+export function MultipleSelectChip({ setMember, member }) {
     const theme = useTheme();
     const [personName, setPersonName] = useState([]);
     const [contact, setContact] = useState([]);
