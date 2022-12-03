@@ -14,13 +14,37 @@ export const CreateGroup = async (name, description, member = [], create) => {
     }
 };
 
-export const UpdateGroup = async (id, nameGroup, description, member = []) => {
+
+export const UpdateGroup = async (id, avatarImage, nameGroup, description, member = []) => {
     try {
         const res = await httpRequest.post('api/groups/update', {
             id,
+            avatarImage,
             nameGroup,
             description,
             member,
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
+export const getGroupAll = async () => {
+    try {
+        const res = await httpRequest.get('api/groups/all');
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const SearchGroup = async (keyword) => {
+    try {
+        const res = await httpRequest.get('api/groups/search',{
+            params: {
+                keyword: keyword
+            }
         });
         return res;
     } catch (error) {

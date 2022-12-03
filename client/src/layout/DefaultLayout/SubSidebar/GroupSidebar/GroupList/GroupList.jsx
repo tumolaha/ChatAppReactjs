@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 //mui
+import AvatarImages from 'react-avatar-edit';
 import { ExpandMore } from '@mui/icons-material';
 import {
     Avatar,
@@ -30,6 +31,7 @@ import {
 import * as serviceUser from '~/services/userService';
 import * as serviceGroup from '~/services/GroupService';
 import { setCurrentContact } from '~/redux/Contact/contactSlice';
+
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -142,7 +144,7 @@ function MultipleSelectChip1({ setMember, member }) {
                                 avatar={
                                     <Avatar
                                         alt={value?.username}
-                                        src={`data:image/svg+xml;base64,${value?.avatarImage}`}
+                                        src={value?.avatarImage}
                                     />
                                 }
                                 key={value?._id}
@@ -168,12 +170,14 @@ function BasicModal({ open1, setOpen1 }) {
     const value = useSelector((state) => state.contact.currentContact.currentChat);
     const currentUser = useSelector((state) => state.auth.login.currentUser);
     const [id, setId] = useState('');
+    const [avatarImage, setAvatarImage] = useState('')
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [member, setMember] = useState([]);
     useEffect(() => {
         if (value) {
             setId(value._id);
+            setAvatarImage(value?.avatarImage)
             setName(value?.nameGroup);
             setDescription(value?.description);
             setMember(value?.member);
@@ -183,12 +187,30 @@ function BasicModal({ open1, setOpen1 }) {
 
     const handleEditGroup = () => {
         const apiRequest = async () => {
-            const res = await serviceGroup.UpdateGroup(id, name, description, [currentUser._id, ...member]);
+            const res = await serviceGroup.UpdateGroup(id,avatarImage, name, description, [currentUser._id, ...member]);
             console.log(res);
         };
         apiRequest();
         handleClose();
     };
+    const [preview, setPreview] = useState(null);
+    function onCloseImage() {
+        setPreview(null);
+    }
+    function onCrop(pv) {
+        setPreview(pv);
+    }
+    function onBeforeFileLoad(elem) {
+        // if (elem.target.files[0].size > 700000) {
+        //     alert('File is too big!');
+        //     elem.target.value = '';
+        // }
+    }
+    async function handleUpload() {
+        const res = await serviceGroup.UpdateGroup(id, preview, name, description, [currentUser._id, ...member]);
+        console.log(res.data);
+        handleClose();
+    }
 
     return (
         <>
@@ -201,7 +223,25 @@ function BasicModal({ open1, setOpen1 }) {
                 <Box sx={style}>
                     <Stack direction={'column'} spacing={1.5}>
                         <Stack direction={'row'} spacing={1}>
-                            <Typography variant="h5">Create Group</Typography>
+                            <Typography variant="h5">edit Group</Typography>
+                        </Stack>
+                        <Stack direction={'column'} justifyContent="center" alignItems="center" spacing={1}>
+                            <Stack direction={'row'}>
+                                <Avatar src={preview ? preview : avatarImage} />
+                            </Stack>
+                            <Stack direction={'row'}>
+                                <AvatarImages
+                                    width={100}
+                                    height={100}
+                                    onCrop={onCrop}
+                                    onClose={onCloseImage}
+                                    onBeforeFileLoad={onBeforeFileLoad}
+                                    src={null}
+                                />
+                            </Stack>
+                            <Stack direction={'row'} justifyContent="space-between">
+                                <Button onClick={handleUpload}>upload</Button>
+                            </Stack>
                         </Stack>
                         <Stack direction={'column'} spacing={1}>
                             <Stack direction={'row'}>
@@ -301,7 +341,7 @@ function GroupList({ searchResult, listGroups }) {
                                     {!item.avatarImage ? (
                                         <Avatar />
                                     ) : (
-                                        <Avatar src={`data:image/svg+xml;base64,${item.avatarImage}`}></Avatar>
+                                        <Avatar src={item.avatarImage}></Avatar>
                                     )}
                                 </StyledBadge>
                             </Stack>

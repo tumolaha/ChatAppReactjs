@@ -64,11 +64,12 @@ const login = async (req, res) => {
 };
 const editProfile = async (req, res) => {
   try {
-    const { id, first_name, last_name, email, location, phone } = req.body;
+    const { id,avatarImage, first_name, last_name, email, location, phone } = req.body;
     await userModel.editItem(
       {
         id: id,
         body: {
+          avatarImage: avatarImage,
           first_name: first_name,
           last_name: last_name,
           email: email,

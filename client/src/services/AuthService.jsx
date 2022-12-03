@@ -26,10 +26,11 @@ export const register = async (firstName, lastName, username, email, password) =
     }
 };
 
-export const editProfile = async (id, firstName, lastName, email, location, phone) => {
+export const editProfile = async (id, avatarImage, firstName, lastName, email, location, phone) => {
     try {
         const res = await httpRequests.post('api/auth/edit/profile', {
             id: id,
+            avatarImage: avatarImage,
             first_name: firstName,
             last_name: lastName,
             email: email,

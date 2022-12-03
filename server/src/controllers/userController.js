@@ -1,32 +1,8 @@
 const userModel = require("../model/userModel");
 
 const setAvatar = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    let body = req.body;
-    body.isAvatarImageSet = true;
-    body.avatarImage = req.body.image;
-    const userData = await userModel.editItem(
-      {
-        id: userId,
-        body: body,
-      },
-      {
-        task: "edit",
-      }
-    );
 
-    return res.json({
-      status: true,
-      data: {
-        isSet: userData.isAvatarImageSet,
-        image: userData.avatarImage,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error });
-  }
+    
 };
 const getAllUser = async (req, res) => {
   try {

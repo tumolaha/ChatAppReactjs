@@ -10,12 +10,12 @@ module.exports = {
     const paging = params.paging || 1;
     //keyword search
     if (params.keyword !== "") {
-      objWhere.name = new RegExp(params.keyword, "i") || "";
+      objWhere.nameGroup = new RegExp(params.keyword, "i") || "";
     }
     if (params.sortField) sort[params.sortField] = params.sortType;
     //get all user vaf search
     if (option.task == "all") {
-      return groupSchema.find({ objWhere }).select();
+      return groupSchema.find({nameGroup: objWhere.nameGroup }).select();
     }
     //get one user
     if (option.task == "one") {

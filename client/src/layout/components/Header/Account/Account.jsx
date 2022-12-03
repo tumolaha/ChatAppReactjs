@@ -53,7 +53,7 @@ function Account() {
             >
                 <Avatar
                     variant="circular"
-                    src={`data:image/svg+xml;base64,${currentUser.avatarImage || ''}`}
+                    src={currentUser.avatarImage}
                     sx={{ width: 30, height: 30, marginRight: '10px' }}
                 />
                 <div>

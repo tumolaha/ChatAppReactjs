@@ -27,6 +27,13 @@ export const getGroupUser = async (id) => {
         console.log(error);
     }
 };
-
+export const setAvatarImage = async (id, image) => {
+    try {
+        const res = await httpRequest.get(`api/friends/all/${id}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 

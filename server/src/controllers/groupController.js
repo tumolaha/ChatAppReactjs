@@ -50,6 +50,7 @@ const updateGroup = async (req, res) => {
       {
         id: req.body.id,
         body: {
+          avatarImage: Group.avatarImage,
           nameGroup: Group.nameGroup,
           member: Group.member,
           description: Group.description,
@@ -65,4 +66,19 @@ const updateGroup = async (req, res) => {
     res.status(500).json({ msg: error });
   }
 };
-module.exports = { createGroup, getGroupAll, getGroupUser, updateGroup };
+const getGroupSearch = async (req, res) => {
+  let params = [];
+    params.keyword = req.query.keyword;
+    params.limit = req.query.limit || 10;
+  try {
+    const groupList = await groupModel.listGroup(
+      params, { task: "all" }
+    );
+    return res.json({ status: true, data: groupList });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: error });
+  }
+};
+
+module.exports = { createGroup, getGroupAll, getGroupUser, updateGroup, getGroupSearch };

@@ -16,7 +16,8 @@ import { Box } from '@mui/system';
 import { CaretDown, DotsThreeOutlineVertical, IdentificationBadge } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {editProfile} from '~/redux/Auth/AuthSlice';
+import { editProfile } from '~/redux/Auth/AuthSlice';
+import AvatarImages from 'react-avatar-edit';
 
 import * as services from '~/services/AuthService';
 const style = {
@@ -40,19 +41,46 @@ const ModelEditProfile = ({ open, handleClose }) => {
 
     const [firstName, setFirstName] = useState(currentUser.first_name);
     const [lastName, setLastName] = useState(currentUser.last_name);
-
+    const [avatarImage, setAvatarImage] = useState(currentUser.avatarImage);
     // const [username, setUsername] = useState(currentUser.username);
     const [email, setEmail] = useState(currentUser.email);
     const [phone, setPhone] = useState(currentUser.phone);
     const [location, setLocation] = useState(currentUser.location);
 
-
     const apiRequest = async () => {
-        const res = await services.editProfile(currentUser._id, firstName, lastName, email, location, phone);
+        const res = await services.editProfile(
+            currentUser._id,
+            avatarImage,
+            firstName,
+            lastName,
+            email,
+            location,
+            phone,
+        );
         console.log(res.data);
-        dispatch(editProfile(res.data))
+        dispatch(editProfile(res.data));
         handleClose();
     };
+
+    const [preview, setPreview] = useState(null);
+    function onCloseImage() {
+        setPreview(null);
+    }
+    function onCrop(pv) {
+        setPreview(pv);
+    }
+    function onBeforeFileLoad(elem) {
+        // if (elem.target.files[0].size > 700000) {
+        //     alert('File is too big!');
+        //     elem.target.value = '';
+        // }
+    }
+    async function handleUpload() {
+        const res = await services.editProfile(currentUser._id, preview, firstName, lastName, email, location, phone);
+        console.log(res.data);
+        dispatch(editProfile(res.data));
+        handleClose();
+    }
 
     return (
         <>
@@ -65,8 +93,23 @@ const ModelEditProfile = ({ open, handleClose }) => {
                 <Box sx={style}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h5">Edit Profile</Typography>
-                        <Stack direction={'column'} justifyContent="center" alignItems="center">
-                            <Avatar />
+                        <Stack direction={'column'} justifyContent="center" alignItems="center" spacing={1}>
+                            <Stack direction={'row'}>
+                                <Avatar src={preview ? preview : avatarImage} />
+                            </Stack>
+                            <Stack direction={'row'}>
+                                <AvatarImages
+                                    width={100}
+                                    height={100}
+                                    onCrop={onCrop}
+                                    onClose={onCloseImage}
+                                    onBeforeFileLoad={onBeforeFileLoad}
+                                    src={null}
+                                />
+                            </Stack>
+                            <Stack direction={'row'} justifyContent="space-between">
+                                <Button onClick={handleUpload}>upload</Button>
+                            </Stack>
                         </Stack>
                         <Stack direction={'column'}>
                             <Typography variant="h6">First Name</Typography>
@@ -129,7 +172,11 @@ const ModelEditProfile = ({ open, handleClose }) => {
                             />
                         </Stack>
                         <Stack direction={'row'} spacing={1} p={1} justifyContent="center" alignItems="center">
-                            <Button variant="contained" sx={{ backgroundColor: theme.palette.primary.light }} onClick={apiRequest}>
+                            <Button
+                                variant="contained"
+                                sx={{ backgroundColor: theme.palette.primary.light }}
+                                onClick={apiRequest}
+                            >
                                 Save Profile
                             </Button>
                             <Button variant="outlined" onClick={handleClose}>
@@ -162,7 +209,7 @@ function ProfileSidebar() {
                 </Stack>
                 <Stack direction={'column'} spacing={1.5} p={2} justifyContent="center" alignItems="center">
                     <Stack>
-                        <Avatar src={`data:image/svg+xml;base64,${currentUser.avatarImage}`} />
+                        <Avatar src={currentUser.avatarImage} />
                     </Stack>
                     <Stack>
                         <Typography variant="h6">{currentUser.first_name + ' ' + currentUser.last_name}</Typography>

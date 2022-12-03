@@ -87,7 +87,7 @@ export function BasicModal({ open, setOpen }) {
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h5"> Profile Friends</Typography>
                         <Stack direction={'column'} justifyContent="center" alignItems="center">
-                            <Avatar src={`data:image/svg+xml;base64,${value?.avatarImage}`} />
+                            <Avatar src={value?.avatarImage} />
                         </Stack>
                         <Stack direction={'column'}>
                             <Typography variant="h6">First Name</Typography>
@@ -248,7 +248,8 @@ function MessageListItem({ searchResult = [], onlineUser }) {
                                         {!item?.user.avatarImage ? (
                                             <Avatar />
                                         ) : (
-                                            <Avatar src={`data:image/svg+xml;base64,${item.user.avatarImage}`}></Avatar>
+                                            <Avatar src={item.user.avatarImage}></Avatar>
+                                            // <Avatar src={`data:image/svg+xml;base64,${item.user.avatarImage}`}></Avatar>
                                         )}
                                     </StyledBadge>
                                 </Stack>

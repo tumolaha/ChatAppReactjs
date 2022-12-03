@@ -196,7 +196,7 @@ function ContactSidebar() {
                         >
                             <Stack direction="row" alignItems="center">
                                 <Stack p={1}>
-                                    <Avatar src={`data:image/svg+xml;base64,${user[0].data.avatarImage}`} />
+                                    <Avatar src={user[0].data.avatarImage} />
                                 </Stack>
                                 <Stack direction={'column'} spacing={1} p={1}>
                                     <Typography

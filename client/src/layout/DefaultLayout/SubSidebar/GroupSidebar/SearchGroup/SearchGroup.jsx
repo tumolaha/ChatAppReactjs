@@ -6,7 +6,7 @@ import { Search } from '@mui/icons-material';
 import { alpha, InputBase, styled } from '@mui/material';
 
 //api
-import * as searchServices from '~/services/SearchService';
+import * as servicesGroup from '~/services/GroupService';
 
 const SearchStyle = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -62,11 +62,11 @@ function SearchGroup({ setSearchResult }) {
             setSearchResult([]);
             return;
         }
-
         const fetchApi = async () => {
             setLoading(true);
-            const listUsers = await searchServices.searchUser(debouncedValue);
-            setSearchResult(listUsers);
+            const listUsers = await servicesGroup.SearchGroup(debouncedValue);
+            console.log(listUsers);
+            setSearchResult(listUsers.data); 
             setLoading(false);
         };
         fetchApi();

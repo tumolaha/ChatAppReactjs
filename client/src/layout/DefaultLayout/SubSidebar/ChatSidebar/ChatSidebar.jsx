@@ -102,7 +102,7 @@ function ChatSidebar() {
                 <Stack height={'80px'} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Box sx={{ padding: '10px 0px 10px 0px' , height: '100%',width: '100%' }}>
                         <Swiper watchSlidesProgress={true} slidesPerView={4} className="mySwiper">
-                            <SwiperSlide className={cx('item-slide')}>
+                            <SwiperSlide className={cx('item-slide')} style={{display: 'flex', alignItems: 'center'}}>
                                 {listFriendsOnline.map((item) => {
                                     return (
                                         <Box
@@ -137,7 +137,7 @@ function ChatSidebar() {
                                                     }}
                                                 >
                                                     <Avatar
-                                                        src={`data:image/svg+xml;base64,${item.user.avatarImage}`}
+                                                        src={item.user.avatarImage}
                                                         sx={{ boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px' }}
                                                     />
                                                 </StyledBadge>

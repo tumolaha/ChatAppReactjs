@@ -16,7 +16,7 @@ function ChatItem({ own = true, value = {}, currentUser }) {
     const theme = useTheme();
     return (
         <div className={own ? cx('chat-content') : cx('chat-content', 'own')}>
-            <Avatar src={`data:image/svg+xml;base64,${value.sender.avatarImage || ''}`} alt="user" />
+            <Avatar src={value.sender.avatarImage} alt="user" />
             <div className={cx('chat_container')}>
                 <Typography>{value.sender.username}</Typography>
                 <div className={cx('chat_item')}>
